@@ -6,10 +6,12 @@ requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.12.15",
     "aiosmtplib>=4.0.2",
+    "bs4>=0.0.2",
     "certifi>=2025.8.3",
     "dotenv>=0.9.9",
     "langchain-mcp-adapters>=0.1.9",
     "pydantic[email]>=2.11.7",
+    "readability-lxml>=0.8.4.1",
     "requests>=2.32.5",
     "truststore>=0.10.4",
 ]

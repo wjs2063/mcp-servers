@@ -26,6 +26,8 @@ ctx.load_default_certs()
 mcp = FastMCP(name="mail mcp", host="0.0.0.0", port=8080)
 
 
+
+
 def build_html_email(subject: str, body: str) -> str:
     """
     subject와 body를 받아 HTML 이메일 템플릿에 맞게 채워줍니다.
