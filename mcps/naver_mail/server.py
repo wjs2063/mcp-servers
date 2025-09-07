@@ -5,8 +5,9 @@ import truststore
 import os
 import ssl
 from email.message import EmailMessage
-import smtplib
+from aiosmtplib import SMTP
 import truststore
+
 load_dotenv()
 
 truststore.inject_into_ssl()
@@ -44,10 +45,9 @@ async def send_email(to: EmailStr, subject: str, body: str):
     msg["From"] = USER
     msg["To"] = to
     msg.set_content(body)
-    with smtplib.SMTP_SSL(SMTP_SERVER, 465, context=ctx, timeout=5) as s:
-        s.ehlo()
-        s.login(USER, PASSWORD)
-        s.send_message(msg)
+    smtp_client = SMTP(hostname=SMTP_SERVER, port=SMTP_PORT, username=USER, password=PASSWORD, tls_context=ctx)
+    async with smtp_client:
+        await smtp_client.send_message(msg)
     return {
         "to": to,
         "subject": subject,
