@@ -16,7 +16,7 @@ from urllib.parse import urlparse
 from aiohttp import ClientSession, TCPConnector
 from bs4 import BeautifulSoup, NavigableString
 from readability import Document
-
+from bs4 import UnicodeDammit
 import re
 
 ssl_ctx = ssl.create_default_context(cafile=certifi.where())
@@ -99,9 +99,19 @@ async def _fetch_html(url: str) -> str:
     async with ClientSession(headers=HEADERS, connector=TCPConnector(ssl=False)) as session:
         async with session.get(url, timeout=15, allow_redirects=True) as resp:
             resp.raise_for_status()
-            # 인코딩 추론
-            text = await resp.text()
-            return text
+            raw = await resp.read()  # get raw bytes
+            # Try best-effort decoding (uses HTTP headers, meta tags, BOM)
+            dammit = UnicodeDammit(raw, is_html=True)
+            if dammit.unicode_markup:
+                return dammit.unicode_markup
+            # Fallbacks
+            for enc in ("cp949", "euc-kr", "utf-8", "utf-8-sig"):
+                try:
+                    return raw.decode(enc)
+                except Exception:
+                    continue
+            # Last resort: replace errors
+            return raw.decode("utf-8", errors="replace")
 
 
 async def fetch_news_text(url: str) -> str:
