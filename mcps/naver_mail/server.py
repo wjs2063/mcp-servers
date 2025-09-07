@@ -13,7 +13,7 @@ load_dotenv()
 truststore.inject_into_ssl()
 # 네이버 계정 정보
 SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
+SMTP_PORT = os.getenv("GOOGLE_SMTP_PORT", 587)
 USER = os.getenv("MAIL_SEND")  # 메일 보내는 이메일
 PASSWORD = os.getenv("GOOGLE_SMTP_KEY")  # 앱 비밀번호
 # 메일 작성
@@ -93,6 +93,7 @@ def build_html_email(subject: str, body: str) -> str:
 """
     return html
 
+
 @mcp.tool()
 async def send_email(to: EmailStr, subject: str, body: str):
     """
@@ -111,7 +112,7 @@ async def send_email(to: EmailStr, subject: str, body: str):
     msg["Subject"] = subject
     msg["From"] = USER
     msg["To"] = to
-    html_body = build_html_email(subject=subject,body=body)
+    html_body = build_html_email(subject=subject, body=body)
     msg.add_alternative(html_body, subtype="html")
 
     smtp_client = SMTP(hostname=SMTP_SERVER, port=SMTP_PORT, username=USER, password=PASSWORD, tls_context=ctx)
