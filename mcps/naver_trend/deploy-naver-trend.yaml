@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: naver-trend-mcp
+  labels:
+    app: naver-trend-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: naver-trend-mcp
+  template:
+    metadata:
+      name: naver-trend-mcp
+      labels:
+        app: naver-trend-mcp
+    spec:
+      containers:
+        - name: naver-trend-mcp
+          image: naver_trend_mcp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
+      

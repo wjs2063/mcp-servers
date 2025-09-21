@@ -1,0 +1,18 @@
+# 클러스터 외부에서 접근( 브라우저나 로컬 PC)
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: naver-trend-mcp-svc
+spec:
+  type: NodePort
+  selector:
+    app: naver-trend-mcp
+  ports:
+    - name: http
+      port: 9090        # 클러스터 내 서비스 포트
+      targetPort: 8080  # 컨테이너 포트
+      nodePort: 30090   # (옵션) 클러스터 노드에서 개방될 실제 포트 (30000~32767 사이)
+
+
+  
